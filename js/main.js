@@ -110,6 +110,7 @@ Vue.component('product-review', {
     },
     methods: {
       onSubmit() {
+        this.errors = [];
         if(this.name && this.review && this.rating) {
             let productReview = {
                 name: this.name,
@@ -128,6 +129,9 @@ Vue.component('product-review', {
             if(!this.recommend) this.errors.push("Recommendation required.");
         }
       },
+      clearErrors(){
+        this.errors = [];
+      },
     },
   });
 
@@ -139,6 +143,10 @@ Vue.component('product', {
             type: Boolean,
             required: true,
         },
+        cart: {
+            type: Boolean,
+            required: true,
+        }
     },
     template: `
     <div class="product">
@@ -163,11 +171,16 @@ Vue.component('product', {
                 <li v-for="size in sizes">{{ size }}</li>
             </ul>
 
-            <button v-on:click="addToCart" :disabled="!inStock"  :class="{ disabledButton: !inStock }">
-                Add to cart
+            <button v-on:click="addToCart" 
+                    :disabled="!inStock"  
+                    :class="{ disabledButton: !inStock }"
+            >Add to cart
             </button>
             <div>
-                <button v-on:click="deleteToCart" >Delete to cart</button>
+                <button v-on:click="deleteToCart"
+                        :disabled="isDeleteButtonDisabled"
+                        :class="{ disabledButton: isDeleteButtonDisabled }"
+                >Delete to cart</button>
             </div>
         </div>
         
@@ -199,7 +212,7 @@ Vue.component('product', {
                     variantId: 2235,
                     variantColor: 'blue',
                     variantImage: "./assets/vmSocks-blue-onWhite.jpg",
-                    variantQuantity: 0,
+                    variantQuantity: 2,
 
                 }
             ],
@@ -218,7 +231,6 @@ Vue.component('product', {
         },
         updateProduct(index) {
             this.selectedVariant = index;
-            console.log(index);
         },
     },
     computed: {
@@ -238,6 +250,10 @@ Vue.component('product', {
             }else{
                 return 2.99
             }
+        },
+        isDeleteButtonDisabled(){
+            const currentVariantId = this.variants[this.selectedVariant].variantId;
+            return this.cart.length === 0 || !this.cart.includes(currentVariantId);
         }
     },
     mounted() {
@@ -277,7 +293,12 @@ let app = new Vue({
             this.cart.push(id);
         },
         delCart(id){
-            this.cart.pop(id);
+            const index = this.cart.indexOf(id);
+            if (index !== -1){
+                this.cart.splice(index, 1);
+                console.log('Deleted item:', id);
+            }
+            
         },
     }
 });

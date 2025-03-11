@@ -2,45 +2,6 @@
 
 let eventBus = new Vue()
 
-// Vue.component('product-detail-shipping', {
-//     props:{
-//         details: {
-//             type: Array,
-//             required: false
-//         },
-//         shipping: {
-//             type: Array,
-//             required: false
-//         }
-//     },
-//
-//     template: `
-//     <div class="tab">
-//          <ul>
-//             <span class="tab"
-//                   :class="{'activeTab': selectedTab === tab}"
-//                   v-for="(tab, index) in tabs"
-//                   :key="index"
-//                   @click="selectedTab = tab"
-//             >{{ tab }}</span>
-//          </ul>
-//          <div v-show="selectedTab === 'Details'">
-//             <product-details :details="details"></product-details>
-//          </div>
-//          <div v-show="selectedTab === 'Shipping'">
-//             <p>{{ shipping }}</p>
-//          </div>
-//
-//     </div>
-//     `,
-//     data() {
-//         return {
-//             tabs: ['Details', 'Shipping'],
-//             selectedTab: 'Details',
-//         }
-//     },
-// })
-
 Vue.component('product-tabs', {
     props: {
       reviews: {
@@ -202,11 +163,12 @@ Vue.component('product', {
                 <li v-for="size in sizes">{{ size }}</li>
             </ul>
 
-            <button v-on:click="addToCart" :disabled="!inStock" :class="{ disabledButton: !inStock }">
+            <button v-on:click="addToCart" :disabled="!inStock"  :class="{ disabledButton: !inStock }">
                 Add to cart
             </button>
-            <button v-on:click="deleteToCart">Delete to cart</button>
-           
+            <div>
+                <button v-on:click="deleteToCart" >Delete to cart</button>
+            </div>
         </div>
         
         <product-tabs :reviews="reviews" :details="details" :shipping="shipping"></product-tabs>
